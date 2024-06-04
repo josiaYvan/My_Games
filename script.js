@@ -19,6 +19,7 @@ function capitalizeAndShuffle(word) {
 function showWordManagerView() {
   document.getElementById("wordManagerView").classList.remove("d-none");
   document.getElementById("displayView").classList.add("d-none");
+  document.getElementById("abacusView").classList.add("d-none");
   document.getElementById("calculationView").classList.add("d-none");
   populateWordTable();
 }
@@ -27,6 +28,7 @@ function showWordManagerView() {
 function showDisplayView() {
   document.getElementById("wordManagerView").classList.add("d-none");
   document.getElementById("displayView").classList.remove("d-none");
+  document.getElementById("abacusView").classList.add("d-none");
   document.getElementById("calculationView").classList.add("d-none");
   displayRandomWord();
 }
@@ -36,6 +38,17 @@ function showCalculationView() {
   document.getElementById("wordManagerView").classList.add("d-none");
   document.getElementById("displayView").classList.add("d-none");
   document.getElementById("calculationView").classList.remove("d-none");
+  document.getElementById("abacusView").classList.add("d-none");
+
+  generateCalculation();
+}
+
+// Show the calculation view
+function showAbacusView() {
+  document.getElementById("wordManagerView").classList.add("d-none");
+  document.getElementById("displayView").classList.add("d-none");
+  document.getElementById("calculationView").classList.add("d-none");
+  document.getElementById("abacusView").classList.remove("d-none");
   generateCalculation();
 }
 
@@ -329,6 +342,78 @@ document.addEventListener("keydown", (event) => {
     generateCalculation();
   }
 });
+
+const numInput = document.getElementById("numInput");
+const scrollTimeInput = document.getElementById("scrollTimeInput");
+const generateBtn = document.getElementById("generateBtn");
+const numbersContainer = document.getElementById("numbersContainer");
+const showResultBtn = document.getElementById("showResultBtn");
+
+let intervalId;
+let currentIndex = 0;
+let numbers = [];
+let sum = 0;
+
+function generateNumbers() {
+  numbers = [];
+  sum = 0;
+  const numCount = parseInt(numInput.value);
+  const scrollTime = parseInt(scrollTimeInput.value);
+  if (isNaN(numCount) || numCount < 1 || numCount > 20) {
+    alert("Veuillez entrer un nombre entre 1 et 20.");
+    return;
+  }
+  if (isNaN(scrollTime) || scrollTime < 500 || scrollTime > 5000) {
+    alert("Veuillez entrer un temps de défilement entre 500 et 5000 ms.");
+    return;
+  }
+
+  for (let i = 0; i < numCount; i++) {
+    const randomNum = Math.floor(Math.random() * 10);
+    numbers.push(randomNum);
+    sum += randomNum;
+  }
+
+  currentIndex = 0;
+  numbersContainer.innerHTML = "";
+  intervalId = setInterval(displayNextNumber, scrollTime);
+  showResultBtn.classList.add("d-none");
+}
+
+function displayNextNumber() {
+  if (currentIndex < numbers.length) {
+    const numberDiv = document.createElement("div");
+    numberDiv.classList.add("number", "bg-light", "rounded");
+    numberDiv.textContent = numbers[currentIndex].toString();
+    numberDiv.style.transform = "scale(1)";
+    numbersContainer.appendChild(numberDiv);
+
+    const transitionDuration = parseInt(scrollTimeInput.value) / 1000 / 2;
+    numberDiv.style.transition = `transform ${transitionDuration}s ease-in-out`;
+
+    setTimeout(() => {
+      numberDiv.style.transform = "scale(0)";
+      numberDiv.addEventListener("transitionend", () => {
+        numberDiv.remove();
+      });
+    }, parseInt(scrollTimeInput.value));
+
+    currentIndex++;
+  } else {
+    clearInterval(intervalId);
+    showResultBtn.classList.remove("d-none");
+  }
+}
+
+showResultBtn.addEventListener("click", () => {
+  const totalDiv = document.createElement("div");
+  totalDiv.classList.add("number", "bg-success", "text-white", "rounded");
+  totalDiv.textContent = sum.toString();
+  numbersContainer.appendChild(totalDiv);
+  showResultBtn.classList.add("d-none");
+});
+
+generateBtn.addEventListener("click", generateNumbers);
 
 // Initial setup
 loadJSON();

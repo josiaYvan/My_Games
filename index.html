@@ -21,6 +21,16 @@
         font-size: 4rem;
         margin-bottom: 2rem;
       }
+      .number {
+        font-size: 5rem;
+        width: 200px;
+        height: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem;
+        transition: transform 0.5s;
+      }
     </style>
   </head>
   <body>
@@ -44,6 +54,9 @@
               <a class="nav-link" href="#" onclick="showCalculationView()"
                 >Calcul Rapide</a
               >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showAbacusView()">Abacus</a>
             </li>
           </ul>
         </div>
@@ -144,6 +157,41 @@
           style="font-size: 200px; font-weight: bold"
         ></div>
         <div id="timer"></div>
+      </div>
+      <!-- Abacus  View -->
+      <div id="abacusView" class="d-none">
+        <div class="container my-5">
+          <h1 class="text-center mb-4">Générateur de nombres aléatoires</h1>
+          <div class="d-flex justify-content-center mb-4">
+            <input
+              type="number"
+              id="numInput"
+              class="form-control me-2"
+              placeholder="Nombre de chiffres"
+              min="1"
+              max="20"
+            />
+            <input
+              type="number"
+              id="scrollTimeInput"
+              class="form-control me-2"
+              placeholder="Temps de défilement (ms)"
+              min="500"
+              max="5000"
+              value="1000"
+            />
+            <button id="generateBtn" class="btn btn-primary">Générer</button>
+          </div>
+          <div
+            id="numbersContainer"
+            class="d-flex flex-wrap justify-content-center"
+          ></div>
+          <div class="d-flex justify-content-center mt-4">
+            <button id="showResultBtn" class="btn btn-success d-none">
+              Voir le résultat
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
