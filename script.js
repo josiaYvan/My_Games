@@ -334,7 +334,7 @@ function checkAnswer() {
 
 // Event listeners for calculation view key events
 document.addEventListener("keydown", (event) => {
-  if (event.code === "Space") {
+  if (event.code === "Space" &&   ) {
     stopTimer();
   } else if (event.code === "Enter") {
     checkAnswer();
@@ -370,6 +370,7 @@ function generateNumbers() {
 
   for (let i = 0; i < numCount; i++) {
     const randomNum = Math.floor(Math.random() * 10);
+    // const randomNum = Math.floor(Math.random() * 20) - 10;
     numbers.push(randomNum);
     sum += randomNum;
   }
