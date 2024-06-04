@@ -3,36 +3,48 @@ let timerInterval;
 let startTime;
 let isChronoRunning = false;
 let displayWord = "";
+let interval;
 
+// Capitalize and shuffle a word
 function capitalizeAndShuffle(word) {
   let capitalizedWord = word.toUpperCase();
   let shuffledWord = capitalizedWord
     .split("")
     .sort(() => 0.5 - Math.random())
     .join("");
-  //   displayWord = shuffledWord.replace(/\s/g, "");
   displayWord = shuffledWord;
 }
-// Function to show the word manager view
+
+// Show the word manager view
 function showWordManagerView() {
   document.getElementById("wordManagerView").classList.remove("d-none");
   document.getElementById("displayView").classList.add("d-none");
+  document.getElementById("calculationView").classList.add("d-none");
   populateWordTable();
 }
 
-// Function to show the display view
+// Show the display view
 function showDisplayView() {
   document.getElementById("wordManagerView").classList.add("d-none");
   document.getElementById("displayView").classList.remove("d-none");
+  document.getElementById("calculationView").classList.add("d-none");
   displayRandomWord();
 }
 
-// Function to save words to localStorage
+// Show the calculation view
+function showCalculationView() {
+  document.getElementById("wordManagerView").classList.add("d-none");
+  document.getElementById("displayView").classList.add("d-none");
+  document.getElementById("calculationView").classList.remove("d-none");
+  generateCalculation();
+}
+
+// Save words to localStorage
 function saveWords() {
   localStorage.setItem("words", JSON.stringify(words));
 }
 
-// Function to load words from localStorage
+// Load words from localStorage
 function loadWords() {
   const savedWords = localStorage.getItem("words");
   if (savedWords) {
@@ -40,7 +52,7 @@ function loadWords() {
   }
 }
 
-// Function to handle the form submission
+// Handle the form submission
 document
   .getElementById("wordForm")
   .addEventListener("submit", function (event) {
@@ -54,11 +66,11 @@ document
       document.getElementById(
         "insertStatus"
       ).textContent = `Word "${word}" added!`;
-      populateWordTable(); // Update table immediately
+      populateWordTable();
     }
   });
 
-// Function to display a random word
+// Display a random word
 function displayRandomWord() {
   if (words.length === 0) {
     document.getElementById("wordDisplay").textContent = "No words available.";
@@ -71,6 +83,7 @@ function displayRandomWord() {
   }
 }
 
+// Find word in array
 function findWordInArray(charSet, wordArray) {
   const wordCharSets = wordArray.map((word) => new Set(word.toLowerCase()));
   const matchingWord = wordCharSets.find((charSetArray) => {
@@ -84,10 +97,10 @@ function findWordInArray(charSet, wordArray) {
   return matchingWord ? wordArray[wordCharSets.indexOf(matchingWord)] : null;
 }
 
-// Function to populate the word table
+// Populate the word table
 function populateWordTable() {
   const wordTableBody = document.getElementById("wordTableBody");
-  wordTableBody.innerHTML = ""; // Clear existing table content
+  wordTableBody.innerHTML = "";
   words.forEach((word, index) => {
     const row = document.createElement("tr");
     const wordCell = document.createElement("td");
@@ -104,7 +117,7 @@ function populateWordTable() {
   });
 }
 
-// Function to delete a word
+// Delete a word
 function deleteWord(index) {
   words.splice(index, 1);
   saveWords();
@@ -116,7 +129,7 @@ document
   .getElementById("nextWordBtn")
   .addEventListener("click", displayRandomWord);
 
-// Function to start the chronometer
+// Start the chronometer
 function startChrono() {
   if (timerInterval) {
     clearInterval(timerInterval);
@@ -126,7 +139,7 @@ function startChrono() {
   timerInterval = setInterval(updateChrono, 100);
 }
 
-// Function to update the chronometer display
+// Update the chronometer display
 function updateChrono() {
   const now = new Date().getTime();
   const elapsed = now - startTime;
@@ -134,7 +147,7 @@ function updateChrono() {
     (elapsed / 1000).toFixed(1) + "s";
 }
 
-// Function to stop the chronometer
+// Stop the chronometer
 function stopChrono() {
   if (isChronoRunning) {
     clearInterval(timerInterval);
@@ -144,13 +157,17 @@ function stopChrono() {
 
 // Event listener for the space key to stop the chronometer
 document.addEventListener("keydown", function (event) {
+  console.log(event.code, "knn");
   if (event.code === "Space" && isChronoRunning) {
-    event.preventDefault(); // Prevent default action
+    event.preventDefault();
     stopChrono();
+  }
+  if (event.code === "KeyN") {
+    displayRandomWord();
   }
 });
 
-// Charger les données JSON depuis un fichier externe
+// Load JSON data
 function loadJSON() {
   fetch("bible_data.json")
     .then((response) => response.json())
@@ -168,7 +185,6 @@ function loadJSON() {
           )
         )
       );
-
       localStorage.setItem(
         "francais_personnage",
         JSON.stringify(data.francais["Personnages Bibliques"])
@@ -187,6 +203,7 @@ function loadJSON() {
     });
 }
 
+// Load words by category
 function loadWordsByCategory() {
   const language = document.querySelector(
     'input[name="languageRadio"]:checked'
@@ -199,47 +216,39 @@ function loadWordsByCategory() {
     if (category === "livres") {
       const malagasyLivres = localStorage.getItem("malagasy_livres");
       if (malagasyLivres) {
-        localStorage.setItem("words", malagasyLivres);
         words = JSON.parse(malagasyLivres);
       } else {
         words = [];
-        localStorage.setItem("words", []);
       }
     } else if (category === "personnages") {
       const malagasyPersonnages = localStorage.getItem("malagasy_personnage");
       if (malagasyPersonnages) {
-        localStorage.setItem("words", malagasyPersonnages);
         words = JSON.parse(malagasyPersonnages);
       } else {
         words = [];
-        localStorage.setItem("words", []);
       }
     }
   } else if (language === "francais") {
     if (category === "livres") {
       const francaisLivres = localStorage.getItem("francais_livres");
       if (francaisLivres) {
-        localStorage.setItem("words", francaisLivres);
         words = JSON.parse(francaisLivres);
       } else {
         words = [];
-        localStorage.setItem("words", []);
       }
     } else if (category === "personnages") {
       const francaisPersonnages = localStorage.getItem("francais_personnage");
       if (francaisPersonnages) {
-        localStorage.setItem("words", francaisPersonnages);
         words = JSON.parse(francaisPersonnages);
       } else {
         words = [];
-        localStorage.setItem("words", []);
       }
     }
   }
   populateWordTable();
 }
 
-// Appeler la fonction lorsque la sélection de l'utilisateur change
+// Attach event listeners for radio button changes
 document
   .querySelectorAll('input[name="languageRadio"]')
   .forEach(function (radio) {
@@ -251,20 +260,10 @@ document
     radio.addEventListener("change", loadWordsByCategory);
   });
 
-// Function to handle the Enter key press event
-// Event listener for the space key to stop the chronometer
-document.addEventListener("keydown", function (event) {
-  if (event.code === "Enter" && !isChronoRunning) {
-    event.preventDefault(); // Prevent default action
-    displayCorrectAnswer();
-  }
-});
-
-// Function to display the correct answer from localStorage
+// Display the correct answer from localStorage
 function displayCorrectAnswer() {
   let wordFind = findWordInArray(displayWord, words);
-  console.log(wordFind, "ito");
-  if (wordFind.length > 0) {
+  if (wordFind) {
     document.getElementById("wordDisplay").textContent = wordFind.toUpperCase();
   } else {
     document.getElementById("wordDisplay").textContent =
@@ -272,9 +271,67 @@ function displayCorrectAnswer() {
   }
 }
 
-// Au chargement initial de la page, chargez les mots par défaut
+// Event listener for the Enter key to display the correct answer
+document.addEventListener("keydown", function (event) {
+  if (event.code === "Enter" && !isChronoRunning) {
+    event.preventDefault();
+    displayCorrectAnswer();
+  }
+});
+
+// Variables and functions for calculation view
+let currentOperation, num1, num2, correctAnswer;
+
+function generateCalculation() {
+  const operations = ["+", "-", "*"];
+  currentOperation = operations[Math.floor(Math.random() * operations.length)];
+  num1 = Math.floor(Math.random() * 10);
+  num2 = Math.floor(Math.random() * 10);
+
+  document.getElementById(
+    "calculation"
+  ).textContent = `${num1} ${currentOperation} ${num2}`;
+  startTimer();
+}
+
+function startTimer() {
+  startTime = new Date().getTime();
+  interval = setInterval(() => {
+    const elapsedTime = new Date().getTime() - startTime;
+    document.getElementById("timer").textContent =
+      (elapsedTime / 1000).toFixed(1) + "s";
+  }, 10);
+}
+
+function stopTimer() {
+  clearInterval(interval);
+}
+
+function checkAnswer() {
+  correctAnswer =
+    currentOperation === "+"
+      ? num1 + num2
+      : currentOperation === "-"
+      ? num1 - num2
+      : num1 * num2;
+  document.getElementById("calculation").textContent =
+    document.getElementById("calculation").textContent + " = " + correctAnswer;
+  stopTimer();
+}
+
+// Event listeners for calculation view key events
+document.addEventListener("keydown", (event) => {
+  if (event.code === "Space") {
+    stopTimer();
+  } else if (event.code === "Enter") {
+    checkAnswer();
+  } else if (event.code === "KeyN") {
+    generateCalculation();
+  }
+});
+
+// Initial setup
 loadJSON();
-loadWordsByCategory();
-// Load words on page load
 loadWords();
-showWordManagerView(); // Show the word manager view by default
+loadWordsByCategory();
+showWordManagerView();

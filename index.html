@@ -8,6 +8,20 @@
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      #calculation,
+      #timer {
+        font-size: 4rem;
+        margin-bottom: 2rem;
+      }
+    </style>
   </head>
   <body>
     <div class="container mt-5">
@@ -24,6 +38,11 @@
             <li class="nav-item">
               <a class="nav-link" href="#" onclick="showDisplayView()"
                 >Exercice Words</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showCalculationView()"
+                >Calcul Rapide</a
               >
             </li>
           </ul>
@@ -110,10 +129,21 @@
         <div
           id="wordDisplay"
           class="display-4"
-          style="font-size: 200px; font-weight: bold"
+          style="font-size: 150px; font-weight: bold"
         ></div>
         <div id="chronoDisplay" class="display-4 mt-3"></div>
         <button id="nextWordBtn" class="btn btn-primary mt-3">Next Word</button>
+      </div>
+
+      <!-- Calculation View -->
+      <div id="calculationView" class="d-none">
+        <h2>Calcul Rapide</h2>
+        <div
+          id="calculation"
+          class="display-4"
+          style="font-size: 200px; font-weight: bold"
+        ></div>
+        <div id="timer"></div>
       </div>
     </div>
 
